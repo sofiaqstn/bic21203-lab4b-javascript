@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON Data Retrieval</title>
+</head>
+
+<body>
+    <h1>Book Details</h1>
+
+    <div id="content"></div>
+    <div id="error" style="color: red;"></div>
+
+    <script>
+        async function fetchBooks() {
+            const contentDiv = document.getElementById("content");
+            const errorDiv = document.getElementById("error");
+
+            try {
+                const response = await fetch("books.json");
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                const books = data.books;
+
+                const p1 = document.createElement("p");
+                p1.textContent = `First Book Title: ${books[0].title}`;
+                contentDiv.appendChild(p1);
+
+                const p2 = document.createElement("p");
+                p2.textContent = `Second Book Author: ${books[1].author}`;
+                contentDiv.appendChild(p2);
+
+                const p3 = document.createElement("p");
+                p3.textContent = `Genres:`;
+                contentDiv.appendChild(p3);
+
+                const ul = document.createElement("ul");
+                books.forEach(book => {
+                    const li = document.createElement("li");
+                    li.textContent = `${book.title} — ${book.genres.join(", ")}`;
+                    ul.appendChild(li);
+                });
+                contentDiv.appendChild(ul);
+
+            } catch (err) {
+                errorDiv.textContent = "Failed to load book data. Please check if the server is running or if the file exists.";
+                console.error("Error fetching JSON:", err);
+            }
+        }
+
+        fetchBooks();
+    </script>
+</body>
+
+</html>
